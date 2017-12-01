@@ -35,19 +35,6 @@
 \tikzstyle{information text}=[rounded corners,fill=black!10,inner sep=1ex]
 \tikzstyle{attrbox}=[align=center,shape=rectangle,draw,inner sep=5pt, rounded corners=4pt, thick,fill=black!10]
 
-% \newcommand{\oneDeep}[3]{%
-%     \begin{tikzpicture}[baseline=(evidence.base), txt/.style={shape=rectangle, inner sep=0pt}]
-%     \node[txt] (evidence) {\hl{#1}};
-%     \node[below] (firstBox) at (evidence.south east) {\footnotesize{#2: #3}};
-%     \end{tikzpicture}%
-%     }
-% \newcommand{\twoDeep}[5]{%
-%     \begin{tikzpicture}[baseline=(evidence.base), txt/.style={shape=rectangle, inner sep=0pt}]
-%     \node[txt] (evidence) {\hl{#1}};
-%     \node[below] (firstBox) at (evidence.south) {\footnotesize{#2: #3}};
-%     \node[below] (secondBox) at (firstBox.south east) {\footnotesize{#4: #5}};
-%     \end{tikzpicture}%
-%     }
 \newcommand{\prefixDeep}[3]{%
   #1 %
   \tikz[baseline={([yshift={-\ht\strutbox}]a\x.north)},outer sep=0pt,inner sep=0pt]{%
@@ -62,7 +49,6 @@
   \xdef\x{\pgfmathresult}%
 }
 \newcommand{\oneDeep}[3]{%
-  %\prefixDeep{}{#1}{}%
   \begin{flushright}
   \tikz{
     \node[attrbox,align=right] (b\x) {%
@@ -73,7 +59,6 @@
   \suffixDeep
 }
 \newcommand{\twoDeep}[4]{%
-  %%\prefixDeep{}{#1}{}%
   \begin{flushright}
   \tikz{
     \node[attrbox,align=right] (b\x) {%
@@ -85,7 +70,6 @@
   \suffixDeep
 }
 \newcommand{\threeDeep}[6]{%
-  %%\prefixDeep{#1}%
   \begin{flushright}
   \tikz{
     \node[attrbox,align=right] (b\x) {%
@@ -98,7 +82,6 @@
   \suffixDeep
 }
 \newcommand{\fiveDeep}[9]{%
-  %%\prefixDeep{#1}%
   \begin{flushright}
   \tikz{
     \node[attrbox,align=right] (b\x) {%
@@ -112,14 +95,6 @@
   \end{flushright}
   \suffixDeep
 }
-% \newcommand{\threeDeep}[7]{%
-%     \begin{tikzpicture}[baseline=(evidence.base), txt/.style={shape=rectangle, inner sep=0pt}]
-%     \node[txt] (evidence) {\hl{#1}};
-%     \node[below] (firstBox) at (evidence.south) {\footnotesize{#2: #3}};
-%     \node[below] (secondBox) at (firstBox.south east) {\footnotesize{#4: #5}};
-%     \node[below] at (secondBox.south east) {\footnotesize{#6: #7}};
-%     \end{tikzpicture}%
-%     }
 
 \newcommand{\staging}[4]{
   \threeDeep{#1}{#2}{Timing}{#3}{Historical}{#4}%
@@ -128,21 +103,16 @@
 \newcommand{\lymphNodes}[3]{\staging{Nodes}{#1}{#2}{#3}}
 \newcommand{\metastases}[3]{\staging{Metastases}{#1}{#2}{#3}}
 
-%%\newcommand{\menopause}[3]{\hl{#1}\\ Postmenopausal Status:  #2; Historical:  #3}
 \newcommand{\menopause}[2]{\twoDeep{Postmenopausal Status}{#1}{Historical}{#2}}
 \newcommand{\ecog}[2]{\twoDeep{ECOG}{#1}{Historical}{#2}}
 
-%%\newcommand{\erStatus}[5]{\\ ER Status:  #1; ER Positivity:  #2;  Allred Status:  #3;  Allred Score:  #4;  Historical:  #5}
-%%\newcommand{\prStatus}[5]{\\ PR Status:  #1; ER Positivity:  #2;  Allred Status:  #3;  Allred Score:  #4;  Historical:  #5}
-%%\newcommand{\herStatus}[2]{\\ HER2 Status:  #1; Historical:  #2}
 \newcommand{\erStatus}[5]{\fiveDeep{ER Status}{#1}{ER Positivity}{#2}{Allred Status}{#3}{Allred Score}{#4}{#5}}
 \newcommand{\prStatus}[5]{\fiveDeep{PR Status}{#1}{PR Positivity}{#2}{Allred Status}{#3}{Allred Score}{#4}{#5}}
-\newcommand{\herStatus}[3]{\threeDeep{HER2 Status}{#1}{HER2 Positivity}{#2}{Historical}{#3}}%\\ HER2 Status:  #1; Historical:  #2}
+\newcommand{\herStatus}[3]{\threeDeep{HER2 Status}{#1}{HER2 Positivity}{#2}{Historical}{#3}}
 
 \begin{document}
 \tikzstyle{every picture}+=[remember picture]
 \def\x{0}
-%%\tikz{ \edef\x{0}; }
 
 \maketitle
 
@@ -320,12 +290,10 @@ Labels and measurement values may appear in other formats not documented below b
   Examples:
   \begin{exe}
    \item
-     %%DIAGNOSIS: Invasive Ductal carcinoma with associated DCIS, \tumor{pT2}{T2}{Pathological}{false} pN1mi (sn)
      \prefixDeep{Invasive Ductal carcinoma with associated DCIS,}{pT2}{pN1mi (sn)}
      \tumor{T2}{Pathological}{false}
     
    \item
-     %%DIAGNOSIS: Invasive Ductal carcinoma with associated DCIS, pT2 \lymphNodes{pN1mi}{N1}{Pathological}{false} (sn)
      \prefixDeep{Invasive Ductal carcinoma with associated DCIS, pT2}{pN1mi}{(sn)}
      \lymphNodes{N1}{Pathological}{false}
 
