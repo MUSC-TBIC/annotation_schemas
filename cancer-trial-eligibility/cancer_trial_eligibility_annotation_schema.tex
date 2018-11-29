@@ -2,7 +2,7 @@
 \newcounter{majornumber}
 \newcounter{minornumber}
 \setcounter{majornumber}{1}
-\setcounter{minornumber}{1}
+\setcounter{minornumber}{4}
 
 \usepackage[utf8]{inputenc}
 
@@ -87,7 +87,7 @@
     \node[attrbox,align=right] (b\x) {%
       #1:  #2\\%
       #3:  #4\\%
-      #5:  #6\\%
+     #5:  #6\\%
       #7:  #8\\%
       Historical:  #9%
     };%
@@ -95,11 +95,29 @@
   \end{flushright}
   \suffixDeep
 }
+\newcommand{\sevenDeep}[7]{%
+  \begin{flushright}
+  \tikz{
+    \node[attrbox,align=right] (b\x) {%
+      #1:  #2\\%
+      #3:  #4\\%
+      Historical:  #5\\%
+      Generic:  #6\\%
+      Uncertain:  #7%
+    };%
+  }
+  \end{flushright}
+  \suffixDeep
+}
 
+\newcommand{\stagingPP}[6]{
+  \sevenDeep{#1}{#2}{Timing}{#3}{#4}{#5}{#6}%
+}
 \newcommand{\staging}[4]{
   \threeDeep{#1}{#2}{Timing}{#3}{Historical}{#4}%
 }
-\newcommand{\tumor}[3]{\staging{Tumor}{#1}{#2}{#3}}
+\newcommand{\tumorPP}[5]{\stagingPP{Tumor}{#1}{#2}{#3}{#4}{#5}}
+\newcommand{\tumor}[3]{\stagingPP{Tumor}{#1}{#2}{#3}{false}{false}}
 \newcommand{\lymphNodes}[3]{\staging{Nodes}{#1}{#2}{#3}}
 \newcommand{\metastases}[3]{\staging{Metastases}{#1}{#2}{#3}}
 
@@ -130,6 +148,10 @@ Annotate the full span of text containing the measurement or value of interest a
 Some of these measurements are reports of historical facts.
 For those annotations, you should select the \textsl{Historical} checkbox.
 The value that you set an attribute to should reflect the status at the time the measurement is taken, even if that value differs from the current status.
+Some of these mentions are actually generic uses of term and do not specifically denote the presence or absence of a condition for the patient.
+For those annotations, you should select the \textsl{Generic} checkbox.
+Some of these measurements represent uncertain, hypothetical, or future possible facts.
+For those annotations, you should select the \textsl{Uncertain} checkbox.
 Some of the measurements will be undefined, unreported, or ambiguous.
 For those annotations, you should leave the value blank (if numerical) or choose \textsl{Indeterminant} from the drop-down.
 Beside the highlighted span is an information box showing the attribute(s) to set for the given span.
@@ -154,8 +176,10 @@ Labels and measurement values may appear in other formats not documented below b
     \menopause{True}{false}
     
   \item
-    \prefixDeep{}{Pre-menopausal at diagnosis}{}
-    \menopause{False}{true}
+    \begin{samepage}
+      \prefixDeep{}{Pre-menopausal at diagnosis}{}
+      \menopause{False}{true}
+    \end{samepage}
     
   \item
     \prefixDeep{}{now post-menopausal}{}
@@ -186,12 +210,18 @@ Labels and measurement values may appear in other formats not documented below b
     \prefixDeep{Currently her}{ECOG is 3}{due in part to \dots}
     \ecog{3}{false}
     
+  \item ECOG is not always spelled out and instead surfaces as some
+    variant of `performance status`:\\
+    
+    \prefixDeep{SpO2 99\%}{PS: 0}{}
+    \ecog{0}{false}
+    
   \end{exe}
   
 \item
-  Hormone Receptor Status
+  Biomarker Status
 
-  Each of the three hormone receptors (\textsl{ER}, \textsl{PR}, and \textsl{HER2}) have four attributes of interest:
+  Each of the three receptors (\textsl{ER}, \textsl{PR}, and \textsl{HER2}) have four attributes of interest:
   \begin{enumerate}
   \item
     ER, PR, and HER2 Status
@@ -243,18 +273,28 @@ Labels and measurement values may appear in other formats not documented below b
     \herStatus{Negative}{(blank)}{false}
 
   \item
-    \prefixDeep{}{HER-2/neu amplified}{}
-    \herStatus{Positive}{(blank)}{false}
+    \begin{samepage}
+      \prefixDeep{}{HER-2/neu amplified}{}
+      \herStatus{Positive}{(blank)}{false}
+    \end{samepage}
     
   \item
-    \prefixDeep{}{o HER2/NEU: 3+ (POSITIVE)}{}
-    \herStatus{Positive}{3}{false}
+    \begin{samepage}
+      \prefixDeep{}{o HER2/NEU: 3+ (POSITIVE)}{}
+      \herStatus{Positive}{3}{false}
+    \end{samepage}
     
   \item
     \begin{samepage}
       \prefixDeep{}{ER focal positive (<1\%; negative by Allred)}{}
       \erStatus{Positive}{<1}{Negative}{(blank)}{false}
     \end{samepage}
+
+  \item Positivity and negativity do not need to spelled out.  They
+    can also be indicated by symbols: \\
+
+    \prefixDeep{}{ER$+$}{GAPA$+$}
+    \erStatus{Positive}{(blank)}{(blank)}{(blank)}{false}
     
   \end{exe}
   
@@ -267,7 +307,7 @@ Labels and measurement values may appear in other formats not documented below b
 
     \textbf{Values:}  \textsl{Clinical}, \textsl{Pathological}
 
-    The staging values can be determined clineically or pathologically.
+    The staging values can be determined clinically or pathologically.
     Leave this attribute empty if no explicit timing information is given.
     
   \item
@@ -301,6 +341,24 @@ Labels and measurement values may appear in other formats not documented below b
     \prefixDeep{cT0 cN1}{cM0}{, Stage IIA}
     \metastases{M0}{Clinical}{false}
     
+   \item
+     \prefixDeep{likely}{T3}{N1}
+     \tumorPP{T3}{(blank)}{false}{true}{false}
+    
+  \item In most instances, we require an explicit mention of staging.
+      However, for \textsl{M1} it is enough to see a mention of
+      \textsl{metastatic} to qualify as \textsl{M1} staging: \\
+      
+      \prefixDeep{with}{metastatic}{adenocarcinoma}
+      \metastases{M1}{Indeterminant}{false}
+
+   \item Timing information is sometimes not included as part of the
+     staging word.  In these instances, we will treat the ``clinical
+     stage'' as a context clue and not directly annotate it:\\
+     
+     \prefixDeep{clinical stage T2}{N0}{}
+     \lymphNodes{N0}{clinical}{false}
+      
   \end{exe}
   
 \end{enumerate}
